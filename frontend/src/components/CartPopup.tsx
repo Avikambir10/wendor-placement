@@ -1,6 +1,17 @@
 import { motion, AnimatePresence } from "framer-motion";
 import { useCart } from "../context/CartContext";
 import { useState } from "react";
+import { 
+  IoCart, 
+  IoTrash, 
+  IoChevronUp, 
+  IoChevronDown, 
+  IoCheckmarkCircle 
+} from "react-icons/io5";
+
+interface CartPopupProps {
+  onProceedToCart: () => void;
+}
 
 // Icons
 const ShoppingCartIcon = () => (
@@ -33,17 +44,14 @@ const CheckIcon = () => (
   </svg>
 );
 
-export function CartPopup() {
+export function CartPopup({ onProceedToCart }: CartPopupProps) {
   const { cartItems, totalItems, totalPrice, updateQuantity, removeFromCart } = useCart();
   const [isExpanded, setIsExpanded] = useState(false);
 
   if (totalItems === 0) return null;
 
   const handleProceedToPayment = () => {
-    // Navigate to payment gateway
-    alert(`Proceeding to payment gateway\nTotal Items: ${totalItems}\nTotal Amount: ₹${totalPrice}`);
-    // You can replace this with actual navigation logic
-    // Example: window.location.href = '/payment';
+    onProceedToCart();
   };
 
   return (
@@ -116,7 +124,7 @@ export function CartPopup() {
                             onClick={() => removeFromCart(item.product_id)}
                             className="w-8 h-8 flex items-center justify-center bg-red-100 text-red-600 rounded-lg hover:bg-red-200 transition-colors"
                           >
-                            <TrashIcon />
+                            <IoTrash className="text-base" />
                           </motion.button>
                         </div>
                       </motion.div>
@@ -127,7 +135,7 @@ export function CartPopup() {
             </AnimatePresence>
 
             {/* Cart Summary Bar */}
-            <div className="bg-gradient-to-r from-red-500 to-red-600 p-4 rounded-lg">
+            <div className="bg-gradient-to-r from-red-500 to-red-600 p-4">
               <div className="flex items-center justify-between gap-4">
                 {/* Cart Info */}
                 <motion.button
@@ -137,7 +145,7 @@ export function CartPopup() {
                 >
                   <div className="relative">
                     <div className="w-12 h-12 bg-white/20 backdrop-blur-sm rounded-xl flex items-center justify-center">
-                      <ShoppingCartIcon />
+                      <IoCart className="text-xl" />
                     </div>
                     <motion.div
                       className="absolute -top-1 -right-1 w-6 h-6 bg-white text-red-600 rounded-full flex items-center justify-center text-xs font-bold shadow-lg"
@@ -158,7 +166,7 @@ export function CartPopup() {
                     animate={{ rotate: isExpanded ? 180 : 0 }}
                     transition={{ duration: 0.3 }}
                   >
-                    {isExpanded ? <ChevronDownIcon /> : <ChevronUpIcon />}
+                    {isExpanded ? <IoChevronDown className="text-xl" /> : <IoChevronUp className="text-xl" />}
                   </motion.div>
                 </motion.button>
 
@@ -170,7 +178,7 @@ export function CartPopup() {
                   whileTap={{ scale: 0.95 }}
                 >
                   <span>Proceed</span>
-                  <CheckIcon />
+                  <IoCheckmarkCircle className="text-xl" />
                 </motion.button>
               </div>
 
@@ -185,7 +193,7 @@ export function CartPopup() {
                   {cartItems.slice(0, 3).map((item) => (
                     <div
                       key={item.product_id}
-                      className="shrink-0 bg-white/20 backdrop-blur-sm rounded-lg px-3 py-1.5 flex items-center gap-2"
+                      className="flex-shrink-0 bg-white/20 backdrop-blur-sm rounded-lg px-3 py-1.5 flex items-center gap-2"
                     >
                       <img
                         src={item.image}
@@ -199,7 +207,7 @@ export function CartPopup() {
                     </div>
                   ))}
                   {cartItems.length > 3 && (
-                    <div className="shrink-0 bg-white/20 backdrop-blur-sm rounded-lg px-3 py-1.5 flex items-center">
+                    <div className="flex-shrink-0 bg-white/20 backdrop-blur-sm rounded-lg px-3 py-1.5 flex items-center">
                       <span className="text-white text-xs font-medium">
                         +{cartItems.length - 3} more
                       </span>
